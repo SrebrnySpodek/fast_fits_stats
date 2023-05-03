@@ -1,5 +1,5 @@
-*.fits
-*.coo
+#*.fits
+#*.coo
 
 
 # Byte-compiled / optimized / DLL files
