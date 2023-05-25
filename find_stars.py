@@ -54,6 +54,7 @@ def main():
     if ok:
         stats = FFS(data,**kwargs)
         coo,adu = stats.find_stars()
+        fwhm = stats.fwhm()
     
         txt = f"stars no.: {len(coo)}\n"
         txt = txt + f"min ADU: {stats.min}\n"

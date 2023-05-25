@@ -52,7 +52,7 @@ class FFS:
         self.gain = float(gain)
         self.rn_noise = float(rn_noise)
         self.method = method
-        self.fwhm = float(fwhm)
+        self.fwhm_adopted = float(fwhm)
         self.kernel_size = int(kernel_size)
         self.kernel_sigma = float(fwhm)/2.355
 
@@ -64,10 +64,51 @@ class FFS:
         self.sigma_quantile = numpy.median(image)-numpy.quantile(image, 0.159)
         self.noise = (self.median/self.gain+self.rn_noise)**0.5             
 
+    def fwhm(self,saturation=65000,radius=15):
+        for i,tmp in enumerate(self.coo):
+            if self.adu[i] < saturation and i<20:
+                x,y = self.coo[i]
+                region = self.image[x-radius:x+radius+1,y-radius:y+radius+1] - self.sigma_quantile
+                if region.shape[0] > 0 and region.shape[1] > 0:
+                    if region.all() < saturation:
+                        max_adu = numpy.max(region)
+                        half_adu = (max_adu)/2.
+                        print("----")
+                        region_zeroshift = region - half_adu
+                        region_zeroshift2 = numpy.square(region_zeroshift)
+
+                        min_x,min_y = numpy.unravel_index(numpy.argmin(region_zeroshift2), region_zeroshift2.shape)
+                        d = ((min_x - radius)**2 + (min_y - radius)**2)**0.5
+                        print(d)
+
+                                     
+
+                        region = region - half_adu
+
+                        line = region [0:15,15]
+                        line = line * line
+                        d1 = 15-numpy.argmin(line)
+
+                        line = region [15:,15]                     
+                        line = line * line
+                        d2 = numpy.argmin(line)
+
+                        line = region [15,0:15]                        
+                        line = line * line
+                        d3 = 15-numpy.argmin(line)
+
+                        line = region [15,15:]                                               
+                        line = line * line                                                
+                        d4 = numpy.argmin(line)
+
+                        print(d1,d2,d3,d4)             
+
+
+
+
     def gauss_kernel(self,size,sigma):
         kernel = numpy.fromfunction(lambda x, y: (1/(2*numpy.pi*sigma**2)) * numpy.exp(-((x-(size-1)/2)**2+(y-(size-1)/2)**2)/(2*sigma**2)),(size,size))
         return kernel / numpy.sum(kernel)
-
 
     def find_stars(self):
 
