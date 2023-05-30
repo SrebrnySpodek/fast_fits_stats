@@ -24,7 +24,7 @@ Options:
     saturation=<float>      Saturation level above fwhm calculation will be ignored for a star. Defaults to 65000
     radius=<int>:           Radius in which fwhm will be calculated. Defaults to 10
     all_stars=<bool>:       If True, fwhm will be calculated for all stars. 
-                            If False, only for 100 non saturated brightests. Defaults to False
+                            If False, only for 100 non saturated brightests. Defaults to True
 
 
 Returns: Basic statistics and .ffs file (in the directory of <fits_path>) with stars coordinates and coresponding ADU and fwhm in X and Y
